@@ -69,7 +69,4 @@ All temporary images are stored in your system's temp directory:
 
 These are automatically cleared by the operating system upon reboot, ensuring zero persistent disk space usage.
 
----
 
-## 📄 License
-This project is licensed under the MIT License.
