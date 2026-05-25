@@ -6,6 +6,19 @@ It works seamlessly on both **Linux** and **Windows**!
 
 ---
 
+## 📋 Minimum Requirements
+
+### 🐧 Linux
+* **OS:** Any Linux distribution with X11 display server (or Wayland with Xwayland support).
+* **Packages:** `xclip`, `xdotool`, `libnotify` (*automatically installed by the Linux installer*).
+
+### 🪟 Windows
+* **OS:** Windows 7 / 10 / 11.
+* **PowerShell:** Version 4.0 or newer (*built-in*).
+* **.NET Framework:** Version 4.0 or newer (*built-in*).
+
+---
+
 ## ✨ Features
 
 * 📸 **Instant Paste:** Automatically saves clipboard images to a temporary directory and types the reference code `[Image#X]` into your active chat window.
