@@ -1,111 +1,46 @@
-# Windows 1-Click Installer for Auto-Paste Image Plugin
-# Installs to $env:USERPROFILE\.local\bin and sets up native Windows hotkey (Ctrl+Alt+V)
+# Windows Migration & Cleanup Script for Auto-Paste Image Plugin
+# Transitioning to native Antigravity CLI 'Ctrl + V' and 'Esc' support
 
-$BinDir = Join-Path $env:USERPROFILE ".local\bin"
-if (-not (Test-Path $BinDir)) {
-    New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
-}
+Write-Host "🔄 Initializing Migration and Cleanup to Native Clipboard..." -ForegroundColor Cyan
 
-$ScriptPath = Join-Path $BinDir "auto_paste_img.ps1"
-$AhkPath = Join-Path $BinDir "auto_paste_img.ahk"
+# 1. Remove Startup Shortcut
+$StartupDir = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup"
+$ShortcutPath = Join-Path $StartupDir "PasteImage.lnk"
 
-Write-Host "🔄 Creating auto_paste_img.ps1 script..." -ForegroundColor Cyan
-
-# 1. Generate auto_paste_img.ps1
-$ps1Content = @"
-# Auto-Paste Image Script for Windows (PowerShell)
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
-
-`$TmpDir = Join-Path `$env:TEMP "antigravity_images"
-if (-not (Test-Path `$TmpDir)) {
-    New-Item -ItemType Directory -Path `$TmpDir -Force | Out-Null
-}
-
-`$TempFile = Join-Path `$TmpDir "current_clip.png"
-
-if ([System.Windows.Forms.Clipboard]::ContainsImage()) {
-    `$img = [System.Windows.Forms.Clipboard]::GetImage()
-    `$img.Save(`$TempFile, [System.Drawing.Imaging.ImageFormat]::Png)
-    `$img.Dispose()
-    
-    `$MatchedIndex = `$null
-    `$MaxIndex = 0
-    
-    `$files = Get-ChildItem -Path `$TmpDir -Filter "img_*.png"
-    foreach (`$file in `$files) {
-        if (`$file.Name -match "^img_(\d+)\.png$") {
-            `$num = [int]`$Matches[1]
-            if (`$num -gt `$MaxIndex) {
-                `$MaxIndex = `$num
-            }
-            
-            `$hash1 = Get-FileHash -Path `$TempFile -Algorithm MD5
-            `$hash2 = Get-FileHash -Path `$file.FullName -Algorithm MD5
-            if (`$hash1.Hash -eq `$hash2.Hash) {
-                `$MatchedIndex = `$num
-                break
-            }
-        }
-    }
-    
-    if (`$MatchedIndex -ne `$null) {
-        `$Index = `$MatchedIndex
-        Remove-Item -Path `$TempFile -Force
-    } else {
-        `$Index = `$MaxIndex + 1
-        `$NewFile = Join-Path `$TmpDir "img_`$Index.png"
-        Move-Item -Path `$TempFile -Destination `$NewFile -Force
-    }
-    
-    Start-Sleep -Milliseconds 300
-    [System.Windows.Forms.SendKeys]::SendWait("[Image#`$Index] ")
+if (Test-Path $ShortcutPath) {
+    Write-Host "🧹 Found old custom startup shortcut. Removing..." -ForegroundColor Yellow
+    Remove-Item -Path $ShortcutPath -Force
+    Write-Host "✅ Startup shortcut removed successfully." -ForegroundColor Green
 } else {
-    [System.Windows.Forms.MessageBox]::Show("No image found in clipboard!", "Image Paste Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
-    exit 1
+    Write-Host "✅ No custom startup shortcut found." -ForegroundColor Green
 }
-"@
 
-Set-Content -Path $ScriptPath -Value $ps1Content -Encoding UTF8
+# 2. Remove script files from .local/bin
+$BinDir = Join-Path $env:USERPROFILE ".local\bin"
+$ScriptFiles = @("auto_paste_img.ps1", "auto_paste_img.ahk")
 
-Write-Host "🔄 Creating auto_paste_img.ahk template..." -ForegroundColor Cyan
-
-# 2. Generate auto_paste_img.ahk
-$ahkContent = @"
-#NoEnv
-#NoTrayIcon
-SendMode Input
-SetWorkingDir %A_ScriptDir%
-
-^!v::
-Run, powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File "%USERPROFILE%\.local\bin\auto_paste_img.ps1", , Hide
-return
-"@
-
-Set-Content -Path $AhkPath -Value $ahkContent -Encoding UTF8
-
-Write-Host "🔄 Setting up native Windows hotkey (Ctrl + Alt + V) via Startup shortcut..." -ForegroundColor Cyan
-
-# 3. Create Windows native Startup shortcut (.lnk) with registered hotkey
-try {
-    $WshShell = New-Object -ComObject WScript.Shell
-    $StartupDir = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup"
-    $ShortcutPath = Join-Path $StartupDir "PasteImage.lnk"
-    
-    $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
-    $Shortcut.TargetPath = "powershell.exe"
-    $Shortcut.Arguments = "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$ScriptPath`""
-    $Shortcut.Hotkey = "Ctrl+Alt+V"
-    $Shortcut.WindowStyle = 7 # Minimized/Hidden window
-    $Shortcut.Save()
-    
-    Write-Host ""
-    Write-Host "==========================================" -ForegroundColor Green
-    Write-Host "✅ WINDOWS INSTALLATION SUCCESSFUL!" -ForegroundColor Green
-    Write-Host "🎉 NATIVE HOTKEY REGISTERED: Ctrl + Alt + V" -ForegroundColor Green
-    Write-Host "👉 The shortcut has been added to your Windows Startup folder." -ForegroundColor Yellow
-    Write-Host "👉 Press Ctrl+Alt+V anywhere to paste and type the clipboard image!" -ForegroundColor Yellow
-    Write-Host "==========================================" -ForegroundColor Green
-} catch {
-    Write-Host "⚠️ Failed to create native Windows shortcut. If you use AutoHotkey, please run the generated: $AhkPath" -ForegroundColor Red
+foreach ($file in $ScriptFiles) {
+    $FilePath = Join-Path $BinDir $file
+    if (Test-Path $FilePath) {
+        Write-Host "🧹 Removing obsolete script file at: $FilePath" -ForegroundColor Yellow
+        Remove-Item -Path $FilePath -Force
+    }
 }
+
+# 3. Clean up temporary directory
+$TmpDir = Join-Path $env:TEMP "antigravity_images"
+if (Test-Path $TmpDir) {
+    Write-Host "🧹 Clearing temporary image cache folder at: $TmpDir" -ForegroundColor Yellow
+    Remove-Item -Path $TmpDir -Recurse -Force
+}
+
+Write-Host ""
+Write-Host "==========================================================" -ForegroundColor Green
+Write-Host "🎉 TRANSITION TO NATIVE SUPPORT SUCCESSFUL!" -ForegroundColor Green
+Write-Host "==========================================================" -ForegroundColor Green
+Write-Host "Antigravity CLI now natively handles media pasting!" -ForegroundColor White
+Write-Host "👉 Use  Ctrl + V  to paste clipboard images directly." -ForegroundColor Yellow
+Write-Host "👉 Use  Esc       to clear all attached media from the queue." -ForegroundColor Yellow
+Write-Host "👉 Use  /clear    to reset your session completely." -ForegroundColor Yellow
+Write-Host "==========================================================" -ForegroundColor Green
+Write-Host ""

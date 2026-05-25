@@ -1,72 +1,57 @@
-# 🚀 Antigravity CLI Auto-Paste Image Plugin
+# 🚀 Antigravity CLI Native Clipboard Image Support
 
-A lightweight, intelligent tool that automates pasting images from your clipboard directly into **Antigravity CLI** using a single hotkey: `Ctrl + Alt + V`.
+Now natively built directly into **Antigravity CLI**! You no longer need external scripts, keyloggers, background listeners, or third-party packages to paste and clear images.
 
-It works seamlessly on both **Linux** and **Windows**!
-
----
-
-## 📋 Minimum Requirements
-
-### 🐧 Linux
-* **OS:** Any Linux distribution with X11 display server (or Wayland with Xwayland support).
-* **Packages:** `xclip`, `xdotool`, `libnotify` (*automatically installed by the Linux installer*).
-
-### 🪟 Windows
-* **OS:** Windows 7 / 10 / 11.
-* **PowerShell:** Version 4.0 or newer (*built-in*).
-* **.NET Framework:** Version 4.0 or newer (*built-in*).
+Everything is streamlined, fast, and fully integrated out-of-the-box.
 
 ---
 
-## ✨ Features
+## ✨ Features & Benefits
 
-* 📸 **Instant Paste:** Automatically saves clipboard images to a temporary directory and types the reference code `[Image#X]` into your active chat window.
-* 🧠 **Smart Duplicate Detection:** Compares the binary data/hash of the pasted image with existing ones.
-  * If it's a new image: It increments the index (`[Image#1]`, `[Image#2]`, `[Image#3]`, etc.) and stores it.
-  * If it's an identical image: It reuses the existing index and deletes the duplicate file to save storage.
-* 🎹 **Keyboard Modifier Fix:** Utilizes keyboard state clearing features (`--clearmodifiers` on Linux, native `.NET SendKeys` on Windows) to prevent active modifier keys from eating the leading open bracket `[`.
-* 💻 **Multi-Platform Support:** 
-  * **Linux:** Compatible with popular distributions (Ubuntu/Debian, Fedora, Arch Linux, and openSUSE).
-  * **Windows:** Fully native PowerShell and .NET implementation with **no external dependencies required**!
+* ⚡ **Zero Dependencies:** No need to install `xclip`, `xdotool`, `AutoHotkey`, or configure startup shortcut files.
+* 📸 **Native Paste:** Press `Ctrl + V` inside the Antigravity CLI terminal, and the active clipboard image is immediately captured and attached.
+* 🧹 **Single-Key Clear:** Press `Esc` once or twice to clean up and remove all attached media from the composer queue in an instant.
+* 🔒 **Zero Background Processes:** Saves CPU resources and prevents keybinding conflicts on your OS.
 
 ---
 
-## 📦 1-Click Installation
+## 🎹 Keyboard Commands & Workflows
 
-### 🐧 Linux
-Run the following single-line command in your Linux terminal to download, automatically install dependencies, and register the system hotkey:
+| Command | Action / Keyboard Shortcut | Behavior in Composer |
+| :--- | :--- | :--- |
+| **Paste Image** | `Ctrl + V` | Direct and instant attachment of clipboard image to the prompt. |
+| **Clear All Attachments** | `Esc` | Instantly removes all currently queued/collapsed media from the unsent prompt. |
+| **Start Fresh Conversation** | `/clear` | Resets the conversation, history, and clears all previous attachment context. |
+| **Roll Back Steps** | `/rewind` or `Esc` (twice) | Reverts conversation state and clears associated media from previous turns. |
 
+---
+
+## 🧹 Old Plugin Migration & Cleanup
+
+If you installed the older version of the custom `Ctrl + Alt + V` hotkey script, you should run the cleanup script to remove obsolete background services, custom GNOME keybindings, or Windows startup items to prevent key conflicts.
+
+### 🐧 Linux (GNOME / Terminal)
+Run the following command to completely clean up custom scripts and restore native OS hotkeys:
 ```bash
 curl -sSL https://raw.githubusercontent.com/phuphu0981/PasteImage/main/install.sh | bash
 ```
+*(Or manually run the updated `./install.sh` from the repository).*
 
-### 🪟 Windows
-Run the following single-line command in **PowerShell** to download, install the scripts, and natively register the `Ctrl + Alt + V` hotkey:
-
+### 🪟 Windows (PowerShell)
+Run the following command in **PowerShell** to clean up startup shortcuts and folders:
 ```powershell
 irm https://raw.githubusercontent.com/phuphu0981/PasteImage/main/install.ps1 | iex
 ```
-
-*(This automatically registers the native Windows hotkey via your Startup folder, requiring no third-party tools!)*
-
----
-
-## 💡 How to Use
-
-1. **Take a screenshot** or **Copy** any image to your clipboard.
-2. Focus on your **Antigravity CLI** chat window (or any text editor).
-3. Press the hotkey **`Ctrl + Alt + V`**.
-4. The tag `[Image#1]` (or the corresponding index) will automatically be typed into the chat!
+*(Or manually run the updated `./install.ps1` from the repository).*
 
 ---
 
-## 🧹 Auto-Cleanup
+## 💡 Quick Tips for Media Management
 
-All temporary images are stored in your system's temp directory:
-* **Linux:** `/tmp/antigravity_images/`
-* **Windows:** `%TEMP%\antigravity_images\` (usually `AppData\Local\Temp\antigravity_images`)
+> [!NOTE]
+> **Selective Attachment:** 
+> Since `Esc` clears all attachments from the queue at once, if you want to selectively keep only one of multiple images, simply press `Esc` to clear the queue, then copy the single correct image and press `Ctrl + V` again.
 
-These are automatically cleared by the operating system upon reboot, ensuring zero persistent disk space usage.
-
-
+> [!TIP]
+> **View Active Queue:**
+> You can click or view the **`▼ Media(s) attached`** dropdown above the prompt input to inspect what files will be sent to the Gemini model before pressing Enter.
