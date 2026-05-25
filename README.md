@@ -1,23 +1,23 @@
 # 🚀 Antigravity CLI Auto-Paste Image Plugin
 
-Một công cụ siêu nhẹ, thông minh giúp tự động hóa việc dán ảnh từ clipboard thẳng vào **Antigravity CLI** bằng phím tắt `Ctrl + Alt + V` duy nhất.
+A lightweight, intelligent tool that automates pasting images from your clipboard directly into **Antigravity CLI** using a single hotkey: `Ctrl + Alt + V`.
 
 ---
 
-## ✨ Tính năng nổi bật
+## ✨ Features
 
-* 📸 **Dán ảnh siêu tốc:** Tự động lưu ảnh từ clipboard vào thư mục tạm và gõ mã tham chiếu `[Image#X]` vào khung chat.
-* 🧠 **Nhận diện ảnh thông minh (Tránh trùng lặp):** So sánh dữ liệu nhị phân của ảnh để phát hiện trùng lặp.
-  * Nếu dán ảnh mới: Tự động tăng số thứ tự (`[Image#1]`, `[Image#2]`, `[Image#3]`,...).
-  * Nếu dán lại ảnh cũ: Tự động dùng lại Index cũ mà không sinh file rác.
-* 🎹 **Khắc phục lỗi bàn phím (xdotool):** Tích hợp tính năng tự động giải phóng phím bổ trợ (`--clearmodifiers`) giúp tránh bị nuốt phím mở ngoặc `[`.
-* 🐧 **Hỗ trợ đa nền tảng:** Tự động tương thích với các bản phân phối Linux phổ biến (Ubuntu/Debian, Fedora, Arch, openSUSE).
+* 📸 **Instant Paste:** Automatically saves clipboard images to a temporary directory and types the reference code `[Image#X]` into your chat.
+* 🧠 **Smart Duplicate Detection:** Compares the binary data of the pasted image with existing ones.
+  * If it's a new image: It increments the index (`[Image#1]`, `[Image#2]`, `[Image#3]`, etc.) and stores it.
+  * If it's an identical image: It reuses the existing index and deletes the duplicate file to save storage.
+* 🎹 **Keyboard Modifier Fix:** Utilizes `xdotool`'s `--clearmodifiers` flag to prevent active system modifier keys from eating the leading open bracket `[`.
+* 🐧 **Multi-Distro Support:** Out-of-the-box compatibility with popular Linux distributions (Ubuntu/Debian, Fedora, Arch Linux, and openSUSE).
 
 ---
 
-## 📦 Hướng dẫn cài đặt nhanh (1-Click Install)
+## 📦 1-Click Installation
 
-Chạy một dòng lệnh duy nhất để tải về, tự động cài đặt các công cụ cần thiết và thiết lập phím tắt hệ thống:
+Run the following single-line command in your terminal to download, automatically install dependencies, and register the system shortcut:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/phuphu0981/PasteImage/main/install.sh | bash
@@ -25,20 +25,20 @@ curl -sSL https://raw.githubusercontent.com/phuphu0981/PasteImage/main/install.s
 
 ---
 
-## 💡 Cách sử dụng
+## 💡 How to Use
 
-1. **Chụp ảnh màn hình** hoặc **Copy** một hình ảnh bất kỳ vào clipboard.
-2. Mở cửa sổ chat **Antigravity CLI** (hoặc bất kỳ trình soạn thảo văn bản nào).
-3. Nhấn tổ hợp phím **`Ctrl + Alt + V`**.
-4. Ký tự `[Image#1] ` (hoặc số thứ tự tương ứng) sẽ tự động được gõ vào khung chat, đồng thời hiển thị thông báo dán ảnh thành công!
-
----
-
-## 🧹 Dọn dẹp bộ nhớ tạm
-
-Tất cả ảnh tạm được lưu trữ tại thư mục `/tmp/antigravity_images/` và sẽ tự động được hệ thống Linux dọn dẹp sạch sẽ sau mỗi lần máy tính khởi động lại. Bạn không cần bận tâm về dung lượng lưu trữ của máy.
+1. **Take a screenshot** or **Copy** any image to your clipboard.
+2. Focus on your **Antigravity CLI** chat window (or any text editor).
+3. Press the hotkey **`Ctrl + Alt + V`**.
+4. The tag `[Image#1]` (or the corresponding index) will automatically be typed into the chat, accompanied by a desktop notification!
 
 ---
 
-## 📄 Giấy phép
-Dự án được phân phối dưới giấy phép MIT.
+## 🧹 Auto-Cleanup
+
+All temporary images are stored in `/tmp/antigravity_images/`. They are automatically cleared by the Linux system upon reboot, ensuring zero persistent disk space usage.
+
+---
+
+## 📄 License
+This project is licensed under the MIT License.
